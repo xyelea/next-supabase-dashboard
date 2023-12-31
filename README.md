@@ -19,9 +19,9 @@ npm run dev
 - [x] setup supbase fill env.sample
 - [x] create developer user
 - [x] handle create user using service role
-- [ ] Prevent UI from none admin
-- [ ] update create user for only admin to create only
-- [ ] read user
+- [x] Prevent UI from none admin
+- [] update create user for only admin to create only
+- [x] read user
 - [ ] update user
 - [ ] delete user
 

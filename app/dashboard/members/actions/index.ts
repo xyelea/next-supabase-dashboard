@@ -1,6 +1,7 @@
 "use server";
 import { readUserSession } from "@/lib/actions";
-import { createSupabaseAdmin } from "@/lib/supabase";
+import { createSupabaseAdmin, createSupbaseServerClient } from "@/lib/supabase";
+import { unstable_noStore } from "next/cache";
 /**
  * Create a new member with the specified data.
  * @param {Object} data - The member data including name, role, status, email, password, and confirm.
@@ -60,4 +61,13 @@ export async function updateMemberById(id: string) {
   console.log("update member");
 }
 export async function deleteMemberById(id: string) {}
-export async function readMembers() {}
+/**
+ * Read members from the "permission" table including related information from the "member" table.
+ * Uses unstable_noStore to prevent caching of the response.
+ * @returns {Object} - Result of the query containing member and permission data.
+ */ export async function readMembers() {
+  unstable_noStore();
+  // Create Supabase server client
+  const supabase = await createSupbaseServerClient();
+  return await supabase.from("permission").select("*, member(*)");
+}
