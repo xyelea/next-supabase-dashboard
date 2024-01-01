@@ -20,7 +20,7 @@ npm run dev
 - [x] create developer user
 - [x] handle create user using service role
 - [x] Prevent UI from none admin
-- [] update create user for only admin to create only
+- [x] update create user for only admin to create only
 - [x] read user
 - [ ] update user
 - [ ] delete user
