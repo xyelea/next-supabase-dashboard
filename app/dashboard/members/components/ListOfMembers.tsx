@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useUserStore } from "@/lib/store/user";
 import { readMembers } from "../actions";
 import { Ipermission } from "@/types";
+import DeleteMember from "./DeleteMember";
 // Define the ListOfMembers component
 
 export default async function ListOfMembers() {
@@ -60,17 +61,12 @@ export default async function ListOfMembers() {
               </span>
             </div>
             {/* Action buttons for deleting and editing members */}
-
             <div className="flex gap-2 items-center">
               {isAdmin && (
                 <>
-                  <Button variant="outline">
-                    <TrashIcon />
-                    Delete
-                  </Button>
+                  <DeleteMember user_id={permission.member.id} />
                 </>
               )}
-
               <EditMember isAdmin={isAdmin} />
             </div>
           </div>
