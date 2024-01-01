@@ -38,13 +38,11 @@ export async function createMember(data: {
     return JSON.stringify(createResult);
   } else {
     // Insert member information into the "member" table
-    const memberResult = await supabase
-      .from("member")
-      .insert({
-        name: data.name,
-        id: createResult.data.user?.id,
-        email: data.email,
-      });
+    const memberResult = await supabase.from("member").insert({
+      name: data.name,
+      id: createResult.data.user?.id,
+      email: data.email,
+    });
     // Handle errors during member insertion
     if (memberResult.error?.message) {
       return JSON.stringify(memberResult);
@@ -60,6 +58,26 @@ export async function createMember(data: {
       return JSON.stringify(permissionResult);
     }
   }
+}
+
+/**
+ * Update basic information of a member with the specified ID.
+ * @param {string} id - The ID of the member to update.
+ * @param {Object} data - The updated member data including name.
+ * @returns {string} - A JSON string representing the result of the member update.
+ */
+export async function updateMemberBasicById(
+  id: string,
+  data: {
+    name: string;
+  }
+) {
+  const supabase = await createSupbaseServerClient();
+
+  const result = await supabase.from("member").update(data).eq("id", id);
+  // Invalidate the cache for the "/dashboard/member" path
+  revalidatePath("/dashboard/member");
+  return JSON.stringify(result);
 }
 
 export async function updateMemberById(user_id: string) {
