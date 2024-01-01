@@ -8,5 +8,6 @@ export type Ipermission = {
     id: string;
     created_at: string;
     name: string;
+    email: string;
   };
 };

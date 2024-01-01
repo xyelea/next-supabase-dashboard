@@ -40,7 +40,11 @@ export async function createMember(data: {
     // Insert member information into the "member" table
     const memberResult = await supabase
       .from("member")
-      .insert({ name: data.name, id: createResult.data.user?.id });
+      .insert({
+        name: data.name,
+        id: createResult.data.user?.id,
+        email: data.email,
+      });
     // Handle errors during member insertion
     if (memberResult.error?.message) {
       return JSON.stringify(memberResult);

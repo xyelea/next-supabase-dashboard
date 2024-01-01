@@ -4,9 +4,16 @@ import DailogForm from "../DialogForm";
 import { Button } from "@/components/ui/button";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import EditForm from "./EditorForm";
+import { Ipermission } from "@/types";
 
 // Define the EditMember component
-export default function EditMember({ isAdmin }: { isAdmin: boolean }) {
+export default function EditMember({
+  isAdmin,
+  permission,
+}: {
+  isAdmin: boolean;
+  permission: Ipermission;
+}) {
   return (
     // Use the DialogForm component for editing members
     <DailogForm
@@ -18,7 +25,7 @@ export default function EditMember({ isAdmin }: { isAdmin: boolean }) {
           Edit
         </Button>
       }
-      form={<EditForm isAdmin={isAdmin} />}
+      form={<EditForm isAdmin={isAdmin} permission={permission} />}
     />
   );
 }

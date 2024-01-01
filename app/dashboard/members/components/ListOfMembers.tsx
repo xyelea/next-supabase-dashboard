@@ -67,7 +67,7 @@ export default async function ListOfMembers() {
                   <DeleteMember user_id={permission.member.id} />
                 </>
               )}
-              <EditMember isAdmin={isAdmin} />
+              <EditMember isAdmin={isAdmin} permission={permission} />
             </div>
           </div>
         );
