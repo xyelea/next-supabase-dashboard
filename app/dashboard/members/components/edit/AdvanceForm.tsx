@@ -25,6 +25,8 @@ import { toast } from "@/components/ui/use-toast";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { cn } from "@/lib/utils";
 import { Ipermission } from "@/types";
+import { startTransition, useTransition } from "react";
+import { updateMemberAdvanceById } from "../../actions";
 
 const FormSchema = z.object({
   role: z.enum(["admin", "user"]),
@@ -36,6 +38,7 @@ export default function AdvanceForm({
 }: {
   permission: Ipermission;
 }) {
+  const [isPending, startTransition] = useTransition();
   const roles = ["admin", "user"];
   const status = ["active", "resigned"];
 
@@ -48,13 +51,27 @@ export default function AdvanceForm({
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+    // Use react-transition-group to handle pending state during form submission
+    startTransition(async () => {
+      // Parse the JSON response from the updateMemberBasicById function
+      const { error } = JSON.parse(
+        await updateMemberAdvanceById(permission.id, permission.member_id, data)
+      );
+      // Display a toast notification based on the result of the update operation
+      if (error?.message) {
+        toast({
+          title: "Fail to update",
+          description: (
+            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <code className="text-white">error?.message</code>
+            </pre>
+          ),
+        });
+      } else {
+        toast({
+          title: "Successfully update",
+        });
+      }
     });
   }
 

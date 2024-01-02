@@ -79,9 +79,51 @@ export async function updateMemberBasicById(
   revalidatePath("/dashboard/member");
   return JSON.stringify(result);
 }
+/**
+ * Update advanced information of a member with the specified permission ID and user ID.
+ * @param {string} permission_id - The permission ID of the member to update.
+ * @param {string} user_id - The user ID of the member to update.
+ * @param {Object} data - The updated member data including role and status.
+ * @returns {string} - A JSON string representing the result of the member update.
+ */
+export async function updateMemberAdvanceById(
+  permission_id: string,
+  user_id: string,
+  data: {
+    role: "user" | "admin";
+    status: "active" | "resigned";
+  }
+) {
+  // Check if the current user has admin role
+  const { data: userSession } = await readUserSession();
+  if (userSession.session?.user.user_metadata.role !== "admin") {
+    return JSON.stringify({
+      error: { message: "You are not allowed to do this!" },
+    });
+  } // Create Supabase Admin client
+  const supabaseAdmin = await createSupabaseAdmin();
 
-export async function updateMemberById(user_id: string) {
-  console.log("update member");
+  // Update account using Supabase admin API
+  const updateResult = await supabaseAdmin.auth.admin.updateUserById(user_id, {
+    user_metadata: { role: data.role },
+  });
+
+  // Handle errors during user role update
+  if (updateResult?.error?.message) {
+    return JSON.stringify(updateResult);
+  } else {
+    // Create Supabase server client
+    const supabase = await createSupbaseServerClient();
+
+    // Update member information in the "permission" table
+    const result = await supabase
+      .from("permission")
+      .update(data)
+      .eq("id", permission_id);
+    // Invalidate the cache for the "/dashboard/member" path
+    revalidatePath("/dashboard/member");
+    return JSON.stringify(result);
+  }
 }
 /**
  * Delete a member with the specified user ID.
